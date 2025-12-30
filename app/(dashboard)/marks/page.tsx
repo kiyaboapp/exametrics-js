@@ -115,22 +115,25 @@ export default function MarksPage() {
                 <TableRow>
                   <TableHead>Date</TableHead>
                   <TableHead>File Name</TableHead>
-                  <TableHead>School</TableHead>
                   <TableHead>Records</TableHead>
+                  <TableHead>Success/Total</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {trails.slice(0, 10).map((trail) => (
-                  <TableRow key={trail.id}>
+                  <TableRow key={trail.upload_id}>
                     <TableCell>
                       {format(new Date(trail.created_at), 'dd MMM yyyy HH:mm')}
                     </TableCell>
-                    <TableCell className="font-medium">{trail.file_name}</TableCell>
-                    <TableCell>{trail.centre_number}</TableCell>
-                    <TableCell>{trail.records_count}</TableCell>
+                    <TableCell className="font-medium">{trail.filename}</TableCell>
+                    <TableCell>{trail.total_records}</TableCell>
                     <TableCell>
-                      <Badge variant={trail.status === 'success' ? 'default' : 'destructive'}>
+                      {trail.successful} / {trail.total_records}
+                      {trail.failed > 0 && <span className="text-red-500 ml-1">({trail.failed} failed)</span>}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={trail.status === 'SUCCESS' ? 'default' : trail.status === 'PARTIAL' ? 'secondary' : 'destructive'}>
                         {trail.status}
                       </Badge>
                     </TableCell>

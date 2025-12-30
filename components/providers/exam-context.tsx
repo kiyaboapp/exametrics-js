@@ -1,7 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
-import { getSelectedExamId, setSelectedExamId as saveExamId, getUserExams, getInitialExamId } from '@/lib/auth';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { setSelectedExamId as saveExamId, getUserExams, getInitialExamId } from '@/lib/auth';
 import type { UserExam } from '@/lib/types';
 
 interface ExamContextType {
@@ -13,11 +13,14 @@ interface ExamContextType {
 const ExamContext = createContext<ExamContextType | undefined>(undefined);
 
 export function ExamProvider({ children }: { children: ReactNode }) {
-  const userExams = typeof window !== 'undefined' ? getUserExams() : [];
-  const initialExamId = typeof window !== 'undefined' ? getInitialExamId(userExams) : null;
-  
-  
-  const [selectedExamId, setExamIdState] = useState<string | null>(initialExamId);
+  const [userExams, setUserExams] = useState<UserExam[]>([]);
+  const [selectedExamId, setExamIdState] = useState<string | null>(null);
+
+  useEffect(() => {
+    const exams = getUserExams();
+    setUserExams(exams);
+    setExamIdState(getInitialExamId(exams));
+  }, []);
 
   const setSelectedExamId = (examId: string) => {
     setExamIdState(examId);

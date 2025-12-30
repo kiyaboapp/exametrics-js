@@ -9,6 +9,7 @@ export const EXAM_LEVELS: ExamLevel[] = ['STNA', 'SFNA', 'PSLE', 'FTNA', 'CSEE',
 export const PRIMARY_LEVELS: ExamLevel[] = ['STNA', 'SFNA', 'PSLE'];
 export const SECONDARY_LEVELS: ExamLevel[] = ['FTNA', 'CSEE', 'ACSEE'];
 
+// THEsE TWO ARE FOR SORTING AND DUSPLAY ONLY NO REAL RELIABLE OR USABLE
 export const DIVISION_ORDER: Division[] = ['I', 'II', 'III', 'IV', '0', 'INC', 'ABS'];
 export const GRADE_ORDER: Grade[] = ['A', 'B', 'C', 'D', 'E', 'F', 'S'];
 
@@ -35,16 +36,6 @@ export const GRADE_COLORS: Record<Grade, string> = {
 export const GENDER_COLORS = {
   'M': '#3b82f6',
   'F': '#ec4899',
-};
-
-export const GRADE_POINTS: Record<Grade, number> = {
-  'A': 1,
-  'B': 2,
-  'C': 3,
-  'D': 4,
-  'E': 5,
-  'F': 6,
-  'S': 7,
 };
 
 export const EXAM_STORAGE_KEY = 'selected_exam_id';

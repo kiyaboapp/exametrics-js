@@ -150,7 +150,7 @@ export default function ExamsPage() {
             </TableHeader>
             <TableBody>
               {filteredExams?.map((exam) => (
-                <TableRow key={exam.id}>
+                <TableRow key={`exam-${exam.id}`}>
                   <TableCell className="font-medium">
                     {exam.exam_name}
                     {exam.exam_name_swahili && (

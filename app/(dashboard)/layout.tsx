@@ -14,16 +14,20 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated()) {
+    const ok = isAuthenticated();
+    setAuthed(ok);
+    setIsReady(true);
+
+    if (!ok) {
       router.push('/login');
     }
   }, [router]);
 
-  if (!isAuthenticated()) {
-    return null;
-  }
+  if (!isReady || !authed) return null;
 
   return (
     <div className="flex h-screen overflow-hidden">

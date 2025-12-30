@@ -88,6 +88,13 @@ export interface Student {
   sex: Sex;
 }
 
+export interface MasterSubject {
+  id: number;
+  subject_code: string;
+  subject_name: string;
+  subject_short: string;
+}
+
 export interface ExamSubject {
   id: number;
   exam_id: string;
@@ -133,24 +140,29 @@ export interface SchoolAnalysis {
   total_students: number;
   school_gpa?: number;
   average_marks: number;
-  division_summary?: Record<Division, number>;
+  division_summary?: Record<Division, { count: number; percentage: number } | number>;
   grades_summary: Record<Grade, number>;
-  school_ranking: {
-    overall_position: number;
-    out_of: number;
-    ward_position: number;
-    council_position: number;
-    region_position: number;
+  school_ranking?: {
+    national_position?: number;
+    national_total?: number;
+    regional_position?: number;
+    regional_total?: number;
+    council_position?: number;
+    council_total?: number;
+    ward_position?: number;
+    ward_total?: number;
   };
-  subjects_gpa: Record<string, SubjectPerformance>;
+  subjects_gpa: SubjectPerformance[];
 }
 
 export interface SubjectPerformance {
+  subject_code?: string;
   subject_name: string;
   gpa?: number;
   average: number;
-  position: number;
-  out_of: number;
+  position?: number;
+  out_of?: number;
+  student_count?: number;
 }
 
 export interface LocationHierarchy {
@@ -162,6 +174,7 @@ export interface LocationHierarchy {
 
 export interface RegionData {
   total_schools: number;
+  total_students?: number;
   councils: Record<string, CouncilData>;
 }
 

@@ -4,6 +4,7 @@ import { useExamStats } from '@/lib/hooks';
 import { StatCard } from '@/components/stat-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookOpen, CheckCircle, Calendar, Clock, FileCheck } from 'lucide-react';
+import Link from 'next/link';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis } from 'recharts';
 import { EXAM_LEVELS } from '@/lib/constants';
 
@@ -126,27 +127,33 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            <Card className="cursor-pointer hover:bg-accent transition-colors">
-              <CardContent className="p-6 text-center">
-                <BookOpen className="h-12 w-12 mx-auto mb-2 text-blue-500" />
-                <h3 className="font-semibold">Create New Exam</h3>
-                <p className="text-sm text-muted-foreground">Set up a new examination</p>
-              </CardContent>
-            </Card>
-            <Card className="cursor-pointer hover:bg-accent transition-colors">
-              <CardContent className="p-6 text-center">
-                <FileCheck className="h-12 w-12 mx-auto mb-2 text-green-500" />
-                <h3 className="font-semibold">Process Results</h3>
-                <p className="text-sm text-muted-foreground">Run results processing</p>
-              </CardContent>
-            </Card>
-            <Card className="cursor-pointer hover:bg-accent transition-colors">
-              <CardContent className="p-6 text-center">
-                <CheckCircle className="h-12 w-12 mx-auto mb-2 text-purple-500" />
-                <h3 className="font-semibold">View Analytics</h3>
-                <p className="text-sm text-muted-foreground">Explore exam analytics</p>
-              </CardContent>
-            </Card>
+            <Link href="/exams/create">
+              <Card className="cursor-pointer hover:bg-accent transition-colors h-full">
+                <CardContent className="p-6 text-center">
+                  <BookOpen className="h-12 w-12 mx-auto mb-2 text-blue-500" />
+                  <h3 className="font-semibold">Create New Exam</h3>
+                  <p className="text-sm text-muted-foreground">Set up a new examination</p>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/results/process">
+              <Card className="cursor-pointer hover:bg-accent transition-colors h-full">
+                <CardContent className="p-6 text-center">
+                  <FileCheck className="h-12 w-12 mx-auto mb-2 text-green-500" />
+                  <h3 className="font-semibold">Process Results</h3>
+                  <p className="text-sm text-muted-foreground">Run results processing</p>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/analytics">
+              <Card className="cursor-pointer hover:bg-accent transition-colors h-full">
+                <CardContent className="p-6 text-center">
+                  <CheckCircle className="h-12 w-12 mx-auto mb-2 text-purple-500" />
+                  <h3 className="font-semibold">View Analytics</h3>
+                  <p className="text-sm text-muted-foreground">Explore exam analytics</p>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </CardContent>
       </Card>

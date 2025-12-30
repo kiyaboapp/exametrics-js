@@ -206,6 +206,18 @@ export default function ExamDetailsPage() {
 
         <TabsContent value="subjects" className="mt-4">
           <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Exam Subjects</CardTitle>
+                <CardDescription>Subjects configured for this exam</CardDescription>
+              </div>
+              <Link href={`/exams/subjects?exam=${examId}`}>
+                <Button variant="outline" size="sm">
+                  <Edit className="mr-2 h-4 w-4" />
+                  Configure
+                </Button>
+              </Link>
+            </CardHeader>
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
@@ -240,9 +252,17 @@ export default function ExamDetailsPage() {
         {isSecondary(exam.exam_level) && (
           <TabsContent value="divisions" className="mt-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Division Configuration</CardTitle>
-                <CardDescription>Point ranges for each division</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Division Configuration</CardTitle>
+                  <CardDescription>Point ranges for each division</CardDescription>
+                </div>
+                <Link href={`/exams/divisions?exam=${examId}`}>
+                  <Button variant="outline" size="sm">
+                    <Edit className="mr-2 h-4 w-4" />
+                    Configure
+                  </Button>
+                </Link>
               </CardHeader>
               <CardContent className="p-0">
                 <Table>
@@ -276,9 +296,17 @@ export default function ExamDetailsPage() {
 
         <TabsContent value="grades" className="mt-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Grade Configuration</CardTitle>
-              <CardDescription>Mark ranges for each grade</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Grade Configuration</CardTitle>
+                <CardDescription>Mark ranges for each grade</CardDescription>
+              </div>
+              <Link href={`/exams/grades?exam=${examId}`}>
+                <Button variant="outline" size="sm">
+                  <Edit className="mr-2 h-4 w-4" />
+                  Configure
+                </Button>
+              </Link>
             </CardHeader>
             <CardContent className="p-0">
               <Table>

@@ -45,16 +45,16 @@ export default function RegisterStudentPage() {
   const [success, setSuccess] = useState('');
 
   // Location filters
-  const [selectedRegion, setSelectedRegion] = useState('');
-  const [selectedCouncil, setSelectedCouncil] = useState('');
+  const [selectedRegion, setSelectedRegion] = useState('all');
+  const [selectedCouncil, setSelectedCouncil] = useState('all');
   
   const { data: regions } = useRegions();
   const { data: councils } = useCouncils(selectedRegion);
   const { data: schools } = useSchools();
 
   const filteredSchools = schools?.filter(s => {
-    if (selectedRegion && s.region_name !== selectedRegion) return false;
-    if (selectedCouncil && s.council_name !== selectedCouncil) return false;
+    if (selectedRegion && selectedRegion !== 'all' && s.region_name !== selectedRegion) return false;
+    if (selectedCouncil && selectedCouncil !== 'all' && s.council_name !== selectedCouncil) return false;
     return true;
   });
 
@@ -195,7 +195,7 @@ export default function RegisterStudentPage() {
                   value={selectedRegion}
                   onValueChange={(value) => {
                     setSelectedRegion(value);
-                    setSelectedCouncil('');
+                    setSelectedCouncil('all');
                     setFormData({ ...formData, centre_number: '' });
                   }}
                 >
@@ -203,7 +203,7 @@ export default function RegisterStudentPage() {
                     <SelectValue placeholder="All regions" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Regions</SelectItem>
+                    <SelectItem value="all">All Regions</SelectItem>
                     {regions?.map((region) => (
                       <SelectItem key={region.id} value={region.region_name}>
                         {region.region_name}
@@ -226,7 +226,7 @@ export default function RegisterStudentPage() {
                     <SelectValue placeholder="All councils" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Councils</SelectItem>
+                    <SelectItem value="all">All Councils</SelectItem>
                     {councils?.map((council) => (
                       <SelectItem key={council.id} value={council.council_name}>
                         {council.council_name}

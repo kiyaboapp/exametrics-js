@@ -37,6 +37,7 @@ const navItems: NavItem[] = [
     children: [
       { title: 'All Exams', href: '/exams' },
       { title: 'Create Exam', href: '/exams/create' },
+      { title: 'Subjects Config', href: '/exams/subjects' },
       { title: 'Divisions Config', href: '/exams/divisions' },
       { title: 'Grades Config', href: '/exams/grades' },
     ],

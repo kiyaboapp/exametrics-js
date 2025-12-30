@@ -98,24 +98,30 @@ export default function SchoolAnalysisPage() {
         
         {analysis.school_ranking && (
           <>
-            <RankingCard
-              position={analysis.school_ranking.national_position || 0}
-              outOf={analysis.school_ranking.national_total || 1}
-              label="National Ranking"
-              icon="🏆"
-            />
-            <RankingCard
-              position={analysis.school_ranking.regional_position || 0}
-              outOf={analysis.school_ranking.regional_total || 1}
-              label="Regional Ranking"
-              icon="📍"
-            />
-            <RankingCard
-              position={analysis.school_ranking.council_position || 0}
-              outOf={analysis.school_ranking.council_total || 1}
-              label="Council Ranking"
-              icon="🏛️"
-            />
+            {analysis.school_ranking.national_position && (
+              <RankingCard
+                position={analysis.school_ranking.national_position}
+                outOf={analysis.school_ranking.national_total || 1}
+                label="National Ranking"
+                icon="🏆"
+              />
+            )}
+            {analysis.school_ranking.regional_position && (
+              <RankingCard
+                position={analysis.school_ranking.regional_position}
+                outOf={analysis.school_ranking.regional_total || 1}
+                label="Regional Ranking"
+                icon="📍"
+              />
+            )}
+            {analysis.school_ranking.council_position && (
+              <RankingCard
+                position={analysis.school_ranking.council_position}
+                outOf={analysis.school_ranking.council_total || 1}
+                label="Council Ranking"
+                icon="🏛️"
+              />
+            )}
           </>
         )}
       </div>

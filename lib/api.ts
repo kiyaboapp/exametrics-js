@@ -119,49 +119,6 @@ class ApiClient {
     return data;
   }
 
-  // Exam Divisions
-  async getExamDivisions(examId: string): Promise<ExamDivision[]> {
-    const { data } = await this.client.get<ExamDivision[]>('/exam-divisions', {
-      params: { exam_id: examId },
-    });
-    return data;
-  }
-
-  async updateExamDivision(divisionId: number, division: Partial<ExamDivision>): Promise<ExamDivision> {
-    const { data } = await this.client.put<ExamDivision>(`/exam-divisions/${divisionId}`, division);
-    return data;
-  }
-
-  // Exam Grades
-  async getExamGrades(examId: string): Promise<ExamGrade[]> {
-    const { data } = await this.client.get<ExamGrade[]>('/exam-grades', {
-      params: { exam_id: examId },
-    });
-    return data;
-  }
-
-  async updateExamGrade(gradeId: number, grade: Partial<ExamGrade>): Promise<ExamGrade> {
-    const { data } = await this.client.put<ExamGrade>(`/exam-grades/${gradeId}`, grade);
-    return data;
-  }
-
-  // Exam Subjects
-  async getExamSubjects(examId: string): Promise<ExamSubject[]> {
-    const { data } = await this.client.get<ExamSubject[]>('/exam-subjects', {
-      params: { exam_id: examId },
-    });
-    return data;
-  }
-
-  async addExamSubject(subject: Partial<ExamSubject>): Promise<ExamSubject> {
-    const { data } = await this.client.post<ExamSubject>('/exam-subjects', subject);
-    return data;
-  }
-
-  async deleteExamSubject(subjectId: number): Promise<void> {
-    await this.client.delete(`/exam-subjects/${subjectId}`);
-  }
-
   // Students
   async getStudents(examId: string, centreNumber?: string): Promise<Student[]> {
     const { data } = await this.client.get<Student[]>('/students', {
@@ -541,6 +498,81 @@ class ApiClient {
   async getLocationAnalyses(examId: string): Promise<any[]> {
     const { data } = await this.client.get(`/location-analysis/exam/${examId}`);
     return data;
+  }
+
+  async getExamDivisions(examId: string): Promise<any[]> {
+    const { data } = await this.client.get(`/exams/${examId}/divisions`);
+    return data;
+  }
+
+  async createExamDivision(examId: string, division: { division: string; lowest_points: number; highest_points: number; division_points: number }): Promise<any> {
+    const { data } = await this.client.post(`/exams/${examId}/divisions`, division);
+    return data;
+  }
+
+  async updateExamDivision(examId: string, divisionId: number, division: { division: string; lowest_points: number; highest_points: number; division_points: number }): Promise<any> {
+    const { data } = await this.client.put(`/exams/${examId}/divisions/${divisionId}`, division);
+    return data;
+  }
+
+  async deleteExamDivision(examId: string, divisionId: number): Promise<void> {
+    await this.client.delete(`/exams/${examId}/divisions/${divisionId}`);
+  }
+
+  async getExamGrades(examId: string): Promise<any[]> {
+    const { data } = await this.client.get(`/exams/${examId}/grades`);
+    return data;
+  }
+
+  async createExamGrade(examId: string, grade: { grade: string; lowest_marks: number; highest_marks: number; grade_points: number }): Promise<any> {
+    const { data } = await this.client.post(`/exams/${examId}/grades`, grade);
+    return data;
+  }
+
+  async updateExamGrade(examId: string, gradeId: number, grade: { grade: string; lowest_marks: number; highest_marks: number; grade_points: number }): Promise<any> {
+    const { data } = await this.client.put(`/exams/${examId}/grades/${gradeId}`, grade);
+    return data;
+  }
+
+  async deleteExamGrade(examId: string, gradeId: number): Promise<void> {
+    await this.client.delete(`/exams/${examId}/grades/${gradeId}`);
+  }
+
+  async getExamSubjects(examId: string): Promise<any[]> {
+    const { data } = await this.client.get(`/exams/${examId}/subjects`);
+    return data;
+  }
+
+  async createExamSubject(examId: string, subject: {
+    subject_code: string;
+    subject_name: string;
+    subject_short: string;
+    has_practical: boolean;
+    exclude_from_gpa: boolean;
+    is_primary: boolean;
+    is_olevel: boolean;
+    is_alevel: boolean;
+  }): Promise<any> {
+    const { data } = await this.client.post(`/exams/${examId}/subjects`, subject);
+    return data;
+  }
+
+  async updateExamSubject(examId: string, subjectId: number, subject: {
+    subject_code: string;
+    subject_name: string;
+    subject_short: string;
+    has_practical: boolean;
+    exclude_from_gpa: boolean;
+    is_primary: boolean;
+    is_olevel: boolean;
+    is_alevel: boolean;
+  }): Promise<any> {
+    const { data } = await this.client.put(`/exams/${examId}/subjects/${subjectId}`, subject);
+    return data;
+  }
+
+  async deleteExamSubject(examId: string, subjectId: number): Promise<void> {
+    await this.client.delete(`/exams/${examId}/subjects/${subjectId}`);
   }
 }
 

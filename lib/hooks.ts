@@ -88,6 +88,7 @@ export function useExamDivisions(examId: string | null) {
     queryKey: ['exam-divisions', examId],
     queryFn: () => api.getExamDivisions(examId!),
     enabled: !!examId,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -96,6 +97,127 @@ export function useExamGrades(examId: string | null) {
     queryKey: ['exam-grades', examId],
     queryFn: () => api.getExamGrades(examId!),
     enabled: !!examId,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+// Division mutations
+export function useCreateExamDivision() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ examId, division }: { examId: string; division: { division: string; lowest_points: number; highest_points: number; division_points: number } }) =>
+      api.createExamDivision(examId, division),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['exam-divisions', variables.examId] });
+    },
+  });
+}
+
+export function useUpdateExamDivision() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ examId, divisionId, division }: { examId: string; divisionId: number; division: { division: string; lowest_points: number; highest_points: number; division_points: number } }) =>
+      api.updateExamDivision(examId, divisionId, division),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['exam-divisions', variables.examId] });
+    },
+  });
+}
+
+export function useDeleteExamDivision() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ examId, divisionId }: { examId: string; divisionId: number }) =>
+      api.deleteExamDivision(examId, divisionId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['exam-divisions', variables.examId] });
+    },
+  });
+}
+
+// Grade mutations
+export function useCreateExamGrade() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ examId, grade }: { examId: string; grade: { grade: string; lowest_marks: number; highest_marks: number; grade_points: number } }) =>
+      api.createExamGrade(examId, grade),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['exam-grades', variables.examId] });
+    },
+  });
+}
+
+export function useUpdateExamGrade() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ examId, gradeId, grade }: { examId: string; gradeId: number; grade: { grade: string; lowest_marks: number; highest_marks: number; grade_points: number } }) =>
+      api.updateExamGrade(examId, gradeId, grade),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['exam-grades', variables.examId] });
+    },
+  });
+}
+
+export function useDeleteExamGrade() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ examId, gradeId }: { examId: string; gradeId: number }) =>
+      api.deleteExamGrade(examId, gradeId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['exam-grades', variables.examId] });
+    },
+  });
+}
+
+// Subject mutations
+export function useCreateExamSubject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ examId, subject }: { examId: string; subject: {
+      subject_code: string;
+      subject_name: string;
+      subject_short: string;
+      has_practical: boolean;
+      exclude_from_gpa: boolean;
+      is_primary: boolean;
+      is_olevel: boolean;
+      is_alevel: boolean;
+    } }) =>
+      api.createExamSubject(examId, subject),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['exam-subjects', variables.examId] });
+    },
+  });
+}
+
+export function useUpdateExamSubject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ examId, subjectId, subject }: { examId: string; subjectId: number; subject: {
+      subject_code: string;
+      subject_name: string;
+      subject_short: string;
+      has_practical: boolean;
+      exclude_from_gpa: boolean;
+      is_primary: boolean;
+      is_olevel: boolean;
+      is_alevel: boolean;
+    } }) =>
+      api.updateExamSubject(examId, subjectId, subject),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['exam-subjects', variables.examId] });
+    },
+  });
+}
+
+export function useDeleteExamSubject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ examId, subjectId }: { examId: string; subjectId: number }) =>
+      api.deleteExamSubject(examId, subjectId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['exam-subjects', variables.examId] });
+    },
   });
 }
 

@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/select';
 import { PlayCircle, CheckCircle, XCircle, AlertTriangle, Loader2, ArrowLeft } from 'lucide-react';
 import { useExamContext } from '@/components/providers/exam-context';
+import { toast } from 'sonner';
 
 export default function ProcessResultsPage() {
   const searchParams = useSearchParams();
@@ -43,9 +44,12 @@ export default function ProcessResultsPage() {
     try {
       await processResults.mutateAsync(examId);
       setProcessStatus('success');
+      toast.success('Results processed successfully');
     } catch (err: any) {
       setProcessStatus('error');
-      setErrorMessage(getErrorMessage(err) || 'Failed to process results');
+      const msg = getErrorMessage(err) || 'Failed to process results';
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setIsProcessing(false);
     }
