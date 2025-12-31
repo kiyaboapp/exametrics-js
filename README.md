@@ -83,6 +83,66 @@ exametrics-js/
 - **User Management**: Role-based access control
 - **Theme Support**: Light and dark modes
 
+## 📋 Exam Configuration API
+
+All exam configuration endpoints require `exam_id` in the URL path.
+
+### ExamSubject API
+```typescript
+// List all subjects for exam
+api.getExamSubjects(examId)  // GET /exam-subjects/exam/{examId}
+
+// Create subject
+api.createExamSubject(examId, subject)  // POST /exam-subjects/exam/{examId}
+
+// Update subject
+api.updateExamSubject(examId, subjectId, subject)  // PUT /exam-subjects/exam/{examId}/{subjectId}
+
+// Delete subject
+api.deleteExamSubject(examId, subjectId)  // DELETE /exam-subjects/exam/{examId}/{subjectId}
+```
+
+### ExamDivision API
+```typescript
+// List all divisions for exam
+api.getExamDivisions(examId)  // GET /exam-divisions/exam/{examId}
+
+// Create division
+api.createExamDivision(examId, division)  // POST /exam-divisions/exam/{examId}
+
+// Update division
+api.updateExamDivision(examId, divisionId, division)  // PUT /exam-divisions/exam/{examId}/{divisionId}
+
+// Delete division
+api.deleteExamDivision(examId, divisionId)  // DELETE /exam-divisions/exam/{examId}/{divisionId}
+```
+
+### ExamGrade API
+```typescript
+// List all grades for exam
+api.getExamGrades(examId)  // GET /exam-grades/exam/{examId}
+
+// Create grade
+api.createExamGrade(examId, grade)  // POST /exam-grades/exam/{examId}
+
+// Update grade
+api.updateExamGrade(examId, gradeId, grade)  // PUT /exam-grades/exam/{examId}/{gradeId}
+
+// Delete grade
+api.deleteExamGrade(examId, gradeId)  // DELETE /exam-grades/exam/{examId}/{gradeId}
+```
+
+### Field Names Reference
+
+**ExamSubject:**
+- exam_id, subject_code, subject_name, subject_short, has_practical, exclude_from_gpa, is_primary, is_olevel, is_alevel
+
+**ExamDivision:**
+- exam_id, division, lowest_points, highest_points, division_points
+
+**ExamGrade:**
+- exam_id, grade, **lowest_value**, **highest_value**, grade_points, division_points
+
 ## ⚠️ Critical Rules
 
 ### Exam Type Logic

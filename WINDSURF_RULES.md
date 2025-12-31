@@ -145,6 +145,37 @@ GRADE_POINTS = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, S: 7 }
 
 ## API Integration
 
+### Exam Configuration API (ExamSubject, ExamDivision, ExamGrade)
+
+All exam configuration endpoints require `exam_id` in the URL path:
+
+```typescript
+// ExamSubject
+api.getExamSubjects(examId)                           // GET /exam-subjects/exam/{examId}
+api.createExamSubject(examId, subject)                // POST /exam-subjects/exam/{examId}
+api.updateExamSubject(examId, subjectId, subject)     // PUT /exam-subjects/exam/{examId}/{subjectId}
+api.deleteExamSubject(examId, subjectId)              // DELETE /exam-subjects/exam/{examId}/{subjectId}
+
+// ExamDivision
+api.getExamDivisions(examId)                          // GET /exam-divisions/exam/{examId}
+api.createExamDivision(examId, division)              // POST /exam-divisions/exam/{examId}
+api.updateExamDivision(examId, divisionId, division)  // PUT /exam-divisions/exam/{examId}/{divisionId}
+api.deleteExamDivision(examId, divisionId)            // DELETE /exam-divisions/exam/{examId}/{divisionId}
+
+// ExamGrade
+api.getExamGrades(examId)                             // GET /exam-grades/exam/{examId}
+api.createExamGrade(examId, grade)                    // POST /exam-grades/exam/{examId}
+api.updateExamGrade(examId, gradeId, grade)           // PUT /exam-grades/exam/{examId}/{gradeId}
+api.deleteExamGrade(examId, gradeId)                  // DELETE /exam-grades/exam/{examId}/{gradeId}
+```
+
+**Field Names:**
+- **ExamSubject**: exam_id, subject_code, subject_name, subject_short, has_practical, exclude_from_gpa, is_primary, is_olevel, is_alevel
+- **ExamDivision**: exam_id, division, lowest_points, highest_points, division_points
+- **ExamGrade**: exam_id, grade, **lowest_value**, **highest_value**, grade_points, division_points
+
+**Security**: All operations validate item belongs to specified exam_id. Returns 403 if not.
+
 ### Authentication
 ```typescript
 // Login

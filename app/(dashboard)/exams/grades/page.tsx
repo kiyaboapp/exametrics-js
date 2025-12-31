@@ -49,9 +49,10 @@ export default function GradesConfigPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [createForm, setCreateForm] = useState<Partial<ExamGrade>>({
     grade: 'A',
-    lowest_marks: 0,
-    highest_marks: 0,
+    lowest_value: 0,
+    highest_value: 0,
     grade_points: 1,
+    division_points: 0,
   });
 
   if (!examId) {
@@ -86,9 +87,10 @@ export default function GradesConfigPage() {
         gradeId: editingId,
         grade: {
           grade: editForm.grade!,
-          lowest_marks: editForm.lowest_marks!,
-          highest_marks: editForm.highest_marks!,
+          lowest_value: editForm.lowest_value!,
+          highest_value: editForm.highest_value!,
           grade_points: editForm.grade_points!,
+          division_points: editForm.division_points!,
         },
       });
       setEditingId(null);
@@ -113,17 +115,19 @@ export default function GradesConfigPage() {
         examId: examId,
         grade: {
           grade: createForm.grade!,
-          lowest_marks: createForm.lowest_marks!,
-          highest_marks: createForm.highest_marks!,
+          lowest_value: createForm.lowest_value!,
+          highest_value: createForm.highest_value!,
           grade_points: createForm.grade_points!,
+          division_points: createForm.division_points!,
         },
       });
       setIsCreating(false);
       setCreateForm({
         grade: 'A',
-        lowest_marks: 0,
-        highest_marks: 0,
+        lowest_value: 0,
+        highest_value: 0,
         grade_points: 1,
+        division_points: 0,
       });
       toast.success('Grade created successfully');
     } catch (error: any) {
@@ -183,8 +187,8 @@ export default function GradesConfigPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Grade</TableHead>
-                <TableHead>Lowest Marks</TableHead>
-                <TableHead>Highest Marks</TableHead>
+                <TableHead>Lowest Value</TableHead>
+                <TableHead>Highest Value</TableHead>
                 <TableHead>Grade Points</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -203,17 +207,17 @@ export default function GradesConfigPage() {
                   <TableCell>
                     <Input
                       type="number"
-                      value={createForm.lowest_marks}
-                      onChange={(e) => setCreateForm({ ...createForm, lowest_marks: parseInt(e.target.value) || 0 })}
-                      placeholder="Lowest marks"
+                      value={createForm.lowest_value}
+                      onChange={(e) => setCreateForm({ ...createForm, lowest_value: parseInt(e.target.value) || 0 })}
+                      placeholder="Lowest value"
                     />
                   </TableCell>
                   <TableCell>
                     <Input
                       type="number"
-                      value={createForm.highest_marks}
-                      onChange={(e) => setCreateForm({ ...createForm, highest_marks: parseInt(e.target.value) || 0 })}
-                      placeholder="Highest marks"
+                      value={createForm.highest_value}
+                      onChange={(e) => setCreateForm({ ...createForm, highest_value: parseInt(e.target.value) || 0 })}
+                      placeholder="Highest value"
                     />
                   </TableCell>
                   <TableCell>
@@ -257,22 +261,22 @@ export default function GradesConfigPage() {
                     {editingId === grade.id ? (
                       <Input
                         type="number"
-                        value={editForm.lowest_marks}
-                        onChange={(e) => setEditForm({ ...editForm, lowest_marks: parseInt(e.target.value) || 0 })}
+                        value={editForm.lowest_value}
+                        onChange={(e) => setEditForm({ ...editForm, lowest_value: parseInt(e.target.value) || 0 })}
                       />
                     ) : (
-                      grade.lowest_marks
+                      grade.lowest_value
                     )}
                   </TableCell>
                   <TableCell>
                     {editingId === grade.id ? (
                       <Input
                         type="number"
-                        value={editForm.highest_marks}
-                        onChange={(e) => setEditForm({ ...editForm, highest_marks: parseInt(e.target.value) || 0 })}
+                        value={editForm.highest_value}
+                        onChange={(e) => setEditForm({ ...editForm, highest_value: parseInt(e.target.value) || 0 })}
                       />
                     ) : (
-                      grade.highest_marks
+                      grade.highest_value
                     )}
                   </TableCell>
                   <TableCell>

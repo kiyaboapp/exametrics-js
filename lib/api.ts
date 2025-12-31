@@ -524,12 +524,12 @@ class ApiClient {
     return data;
   }
 
-  async createExamGrade(examId: string, grade: { grade: string; lowest_marks: number; highest_marks: number; grade_points: number; division_points: number }): Promise<any> {
+  async createExamGrade(examId: string, grade: { grade: string; lowest_value: number; highest_value: number; grade_points: number; division_points: number }): Promise<any> {
     const { data } = await this.client.post(`/exam-grades/exam/${examId}`, { ...grade, exam_id: examId });
     return data;
   }
 
-  async updateExamGrade(examId: string, gradeId: number, grade: { grade: string; lowest_marks: number; highest_marks: number; grade_points: number; division_points: number }): Promise<any> {
+  async updateExamGrade(examId: string, gradeId: number, grade: { grade: string; lowest_value: number; highest_value: number; grade_points: number; division_points: number }): Promise<any> {
     const { data } = await this.client.put(`/exam-grades/exam/${examId}/${gradeId}`, grade);
     return data;
   }

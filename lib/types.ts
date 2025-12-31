@@ -121,9 +121,10 @@ export interface ExamGrade {
   id: number;
   exam_id: string;
   grade: Grade;
-  lowest_marks: number;
-  highest_marks: number;
+  lowest_value: number;
+  highest_value: number;
   grade_points: number;
+  division_points: number;
 }
 
 export interface ResultsStats {

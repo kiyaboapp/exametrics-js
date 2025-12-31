@@ -153,6 +153,34 @@
 5. **Fixed marks page upload trails** - Using correct field names from UploadTrail type
 6. **Added RegionData.total_students** field to support location page
 
+## 🎯 Session 4 Fixes Applied (Dec 31, 2025)
+
+### Backend API Fixes - ExamSubject, ExamDivision, ExamGrade
+All three entities now have **compulsory exam_id** in URL path for all operations.
+
+**API Endpoint Changes:**
+- `GET /exam-subjects/exam/{exam_id}` - List subjects for exam
+- `GET /exam-subjects/exam/{exam_id}/{subject_id}` - Get single subject (validates ownership)
+- `POST /exam-subjects/exam/{exam_id}` - Create subject
+- `PUT /exam-subjects/exam/{exam_id}/{subject_id}` - Update subject (validates ownership)
+- `DELETE /exam-subjects/exam/{exam_id}/{subject_id}` - Delete subject (validates ownership)
+
+Same pattern for `/exam-divisions/exam/{exam_id}` and `/exam-grades/exam/{exam_id}`.
+
+**Security Enhancement:**
+- All GET (single), PUT, PATCH, DELETE operations now validate that the item belongs to the specified exam_id
+- Returns **403 Forbidden** if item doesn't belong to exam
+
+**ExamGrade Schema Fix:**
+- Field names corrected to match database model:
+  - `lowest_value` (NOT lower_value or lowest_marks)
+  - `highest_value` (NOT highest_marks)
+
+### Frontend Updates Required
+- Update `lib/api.ts` - ExamGrade field names: `lowest_value`, `highest_value`
+- Update grades page - Use correct field names
+- Update types.ts - ExamGrade interface field names
+
 ### New Pages Created
 1. `/location/schools` - School rankings with search and filters
 2. `/analytics/school-type` - Government vs Private comparison with charts
