@@ -22,6 +22,18 @@ import type {
   Council,
   Ward,
   User,
+  PaginatedResponse,
+  SchoolRankingData,
+  SchoolOverview,
+  SubjectRankingData,
+  SchoolSubjectAnalysis,
+  SchoolGradesAnalysis,
+  SchoolDivisionsAnalysis,
+  SchoolSubjectsAnalysis,
+  SchoolRankingAnalysis,
+  SchoolFullAnalysis,
+  ExamStatsDetailed,
+  ResultsProgress,
 } from './types';
 
 class ApiClient {
@@ -176,31 +188,45 @@ class ApiClient {
   async exportMarksTemplate(params: {
     exam_id: string;
     centre_number?: string;
-    practical_mode?: number;
-    marks_filler?: string;
-    include_marks?: boolean;
-  }): Promise<Blob> {
-    const { data } = await this.client.get('/student/subjects/export/excel', {
-      params,
-      responseType: 'blob',
-    });
-    return data;
-  }
-
-  async exportMultipleMarksTemplates(params: {
-    exam_id: string;
+    centre_number_list?: string[];
     region_name?: string;
     council_name?: string;
     ward_name?: string;
     school_type?: string;
-  }): Promise<Blob> {
-    const { data } = await this.client.get('/student/subjects/export/excel/multiple', {
+    practical_mode?: number; // 0 or 1
+    marks_filler?: string;
+    include_marks?: boolean;
+    subject_codes?: string[]; // specific subjects only
+    include_unregistered?: boolean;
+    include_absent?: boolean;
+  }): Promise<{ blob: Blob; filename?: string; contentType?: string }> {
+    const res = await this.client.get('/student/subjects/export/excel', {
       params,
       responseType: 'blob',
     });
-    return data;
+
+    const contentDisposition = (res.headers?.['content-disposition'] as string | undefined) ?? undefined;
+    const contentType = (res.headers?.['content-type'] as string | undefined) ?? undefined;
+
+    let filename: string | undefined;
+    if (contentDisposition) {
+      // supports: filename="file.xlsm" and filename*=UTF-8''file.xlsm
+      const filenameStarMatch = contentDisposition.match(/filename\*=(?:UTF-8''|utf-8''|)([^;]+)/);
+      const filenameMatch = contentDisposition.match(/filename="?([^";]+)"?/);
+      const raw = (filenameStarMatch?.[1] ?? filenameMatch?.[1])?.trim();
+      if (raw) {
+        try {
+          filename = decodeURIComponent(raw.replace(/^UTF-8''/i, ''));
+        } catch {
+          filename = raw.replace(/^UTF-8''/i, '');
+        }
+      }
+    }
+
+    return { blob: res.data as Blob, filename, contentType };
   }
 
+  
   // Marks Import
   async importMarks(file: File, examId: string, uploadNulls = false, useStudentId = false): Promise<any> {
     const formData = new FormData();
@@ -573,6 +599,237 @@ class ApiClient {
 
   async deleteExamSubject(examId: string, subjectId: number): Promise<void> {
     await this.client.delete(`/exam-subjects/exam/${examId}/${subjectId}`);
+  }
+
+  // Analysis Endpoints
+  
+  /**
+   * Get exam statistics with detailed breakdown
+   * @param examId - The exam ID
+   */
+  async getExamStatsDetailed(examId: string): Promise<ExamStatsDetailed> {
+    const { data } = await this.client.get<ExamStatsDetailed>(`/exams/${examId}/stats`);
+    return data;
+  }
+
+  /**
+   * Get school rankings with pagination
+   * @param examId - The exam ID
+   * @param params - Query parameters including pagination, sorting, and filtering
+   */
+  async getSchoolRankings(examId: string, params?: {
+    page?: number;
+    limit?: number;
+    sort_by?: 'gpa_asc' | 'gpa_desc';
+    format?: 'json';
+    centres?: string; // comma-separated centre numbers
+  }): Promise<PaginatedResponse<SchoolRankingData>> {
+    const { data } = await this.client.get<PaginatedResponse<SchoolRankingData>>(
+      `/exams/${examId}/analyses/rankings`,
+      { params }
+    );
+    return data;
+  }
+
+  /**
+   * Get school overviews with pagination
+   * @param examId - The exam ID
+   * @param params - Query parameters including pagination and sorting
+   */
+  async getSchoolOverviews(examId: string, params?: {
+    page?: number;
+    limit?: number;
+    sort_by?: 'gpa_asc' | 'gpa_desc';
+    format?: 'json';
+    centres?: string; // comma-separated centre numbers
+  }): Promise<PaginatedResponse<SchoolOverview>> {
+    const { data } = await this.client.get<PaginatedResponse<SchoolOverview>>(
+      `/exams/${examId}/analyses/overviews`,
+      { params }
+    );
+    return data;
+  }
+
+  /**
+   * Get subject rankings for a specific subject with pagination
+   * @param examId - The exam ID
+   * @param subjectCode - The subject code (e.g., '011')
+   * @param params - Query parameters including pagination and sorting
+   */
+  async getSubjectRankings(examId: string, subjectCode: string, params?: {
+    page?: number;
+    limit?: number;
+    sort_by?: 'gpa_asc' | 'gpa_desc';
+    format?: 'json';
+  }): Promise<PaginatedResponse<SubjectRankingData>> {
+    const { data } = await this.client.get<PaginatedResponse<SubjectRankingData>>(
+      `/exams/${examId}/subjects/${subjectCode}/rankings`,
+      { params }
+    );
+    return data;
+  }
+
+  /**
+   * Get subject analysis for a specific school and subject
+   * @param examId - The exam ID
+   * @param centreNumber - The school centre number
+   * @param subjectCode - The subject code
+   */
+  async getSchoolSubjectAnalysis(
+    examId: string,
+    centreNumber: string,
+    subjectCode: string
+  ): Promise<SchoolSubjectAnalysis> {
+    const { data } = await this.client.get<SchoolSubjectAnalysis>(
+      `/exams/${examId}/schools/${centreNumber}/subjects/${subjectCode}`
+    );
+    return data;
+  }
+
+  /**
+   * Get grades analysis for a specific school
+   * @param examId - The exam ID
+   * @param centreNumber - The school centre number
+   */
+  async getSchoolGradesAnalysis(
+    examId: string,
+    centreNumber: string
+  ): Promise<SchoolGradesAnalysis> {
+    const { data } = await this.client.get<SchoolGradesAnalysis>(
+      `/exams/${examId}/schools/${centreNumber}/analysis/grades`
+    );
+    return data;
+  }
+
+  /**
+   * Get divisions analysis for a specific school
+   * @param examId - The exam ID
+   * @param centreNumber - The school centre number
+   */
+  async getSchoolDivisionsAnalysis(
+    examId: string,
+    centreNumber: string
+  ): Promise<SchoolDivisionsAnalysis> {
+    const { data } = await this.client.get<SchoolDivisionsAnalysis>(
+      `/exams/${examId}/schools/${centreNumber}/analysis/divisions`
+    );
+    return data;
+  }
+
+  /**
+   * Get subjects analysis for a specific school
+   * @param examId - The exam ID
+   * @param centreNumber - The school centre number
+   */
+  async getSchoolSubjectsAnalysis(
+    examId: string,
+    centreNumber: string
+  ): Promise<SchoolSubjectsAnalysis> {
+    const { data } = await this.client.get<SchoolSubjectsAnalysis>(
+      `/exams/${examId}/schools/${centreNumber}/analysis/subjects`
+    );
+    return data;
+  }
+
+  /**
+   * Get ranking analysis for a specific school
+   * @param examId - The exam ID
+   * @param centreNumber - The school centre number
+   */
+  async getSchoolRankingAnalysis(
+    examId: string,
+    centreNumber: string
+  ): Promise<SchoolRankingAnalysis> {
+    const { data } = await this.client.get<SchoolRankingAnalysis>(
+      `/exams/${examId}/schools/${centreNumber}/analysis/ranking`
+    );
+    return data;
+  }
+
+  /**
+   * Get full analysis for a specific school (includes all analysis data)
+   * @param examId - The exam ID
+   * @param centreNumber - The school centre number
+   */
+  async getSchoolFullAnalysis(
+    examId: string,
+    centreNumber: string
+  ): Promise<SchoolFullAnalysis> {
+    const { data } = await this.client.get<SchoolFullAnalysis>(
+      `/exams/${examId}/schools/${centreNumber}/analysis/full`
+    );
+    return data;
+  }
+
+  // Download endpoints for stats
+  async downloadSchoolSummaryStats(examId: string, centreNumber: string, format: 'csv' | 'xlsx' = 'csv'): Promise<Blob> {
+    const { data } = await this.client.get(`/results/download/school-summary-stats`, {
+      params: { exam_id: examId, centre_number: centreNumber, format },
+      responseType: 'blob',
+    });
+    return data;
+  }
+
+  async downloadSchoolSubjectStats(examId: string, centreNumber: string, format: 'csv' | 'xlsx' = 'csv'): Promise<Blob> {
+    const { data } = await this.client.get(`/results/download/school-subject-stats`, {
+      params: { exam_id: examId, centre_number: centreNumber, format },
+      responseType: 'blob',
+    });
+    return data;
+  }
+
+  async downloadRawData(params: {
+    exam_id: string;
+    centre_number?: string;
+    centre_numbers?: string[];
+    ward_name?: string;
+    council_name?: string;
+    region_name?: string;
+    school_type?: 'GOVERNMENT' | 'PRIVATE' | 'UNKNOWN';
+    include_all_subjects?: boolean;
+    marks_type?: 'theory' | 'practical' | 'overall' | 'all';
+    include_results?: boolean;
+  }): Promise<Blob> {
+    const { data } = await this.client.get(`/results/download/rawdata`, {
+      params,
+      responseType: 'blob',
+    });
+    return data;
+  }
+
+  // PDF export endpoints (updated paths)
+  async downloadSchoolResultsPDF(examId: string, centreNumber: string): Promise<Blob> {
+    const { data } = await this.client.get(`/results/results/pdf/${examId}/${centreNumber}`, {
+      responseType: 'blob',
+    });
+    return data;
+  }
+
+  async downloadPDFZipByFilters(params: {
+    exam_id: string;
+    region_name?: string;
+    council_name?: string;
+    ward_name?: string;
+    organize_by_ward?: boolean;
+  }): Promise<Blob> {
+    const { data } = await this.client.get(`/results/pdf/zip/${params.exam_id}`, {
+      params: {
+        region_name: params.region_name,
+        council_name: params.council_name,
+        ward_name: params.ward_name,
+        organize_by_ward: params.organize_by_ward,
+      },
+      responseType: 'blob',
+    });
+    return data;
+  }
+
+  // Results progress tracking
+  async getResultsProgress(examId: string, centreNumber?: string): Promise<ResultsProgress[]> {
+    const { data } = await this.client.get(`/results/progress/${examId}`, {
+      params: centreNumber ? { centre_number: centreNumber } : {},
+    });
+    return data;
   }
 }
 

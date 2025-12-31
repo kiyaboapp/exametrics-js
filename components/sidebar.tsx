@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
@@ -13,15 +12,16 @@ import {
   UserCog,
   Settings,
   ChevronDown,
+  Trophy,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
-import { Sheet, SheetClose } from './ui/sheet';
+import { LucideIcon } from 'lucide-react';
 
 interface NavItem {
   title: string;
   href?: string;
-  icon: any;
+  icon: LucideIcon;
   children?: { title: string; href: string }[];
 }
 
@@ -37,9 +37,9 @@ const navItems: NavItem[] = [
     children: [
       { title: 'All Exams', href: '/exams' },
       { title: 'Create Exam', href: '/exams/create' },
-      { title: 'Subjects Config', href: '/exams/subjects' },
-      { title: 'Divisions Config', href: '/exams/divisions' },
-      { title: 'Grades Config', href: '/exams/grades' },
+      { title: 'Subjects', href: '/exams/subjects' },
+      { title: 'Divisions', href: '/exams/divisions' },
+      { title: 'Grades', href: '/exams/grades' },
     ],
   },
   {
@@ -58,15 +58,48 @@ const navItems: NavItem[] = [
       { title: 'Export Templates', href: '/marks/export' },
       { title: 'Upload Marks', href: '/marks/upload' },
       { title: 'Upload History', href: '/marks/history' },
+      { title: 'Upload Progress', href: '/marks/progress' },
+      {
+        title: 'Results',
+        href: '/results',
+        icon: FileText,
+        items: [
+          {
+            title: 'School Rankings',
+            href: '/results/rankings',
+            icon: Trophy,
+          },
+          {
+            title: 'School Overviews',
+            href: '/results/overviews',
+            icon: BarChart3,
+          },
+          {
+            title: 'Process Results',
+            href: '/results/process',
+          },
+          {
+            title: 'School Analysis',
+            href: '/results/school',
+          },
+          {
+            title: 'Reports',
+            href: '/results/reports',
+          },
+        ],
+      },
     ],
   },
   {
     title: 'Results',
     icon: BarChart3,
     children: [
-      { title: 'Process Results', href: '/results/process' },
+      { title: 'School Rankings', href: '/results/rankings' },
+      { title: 'School Overviews', href: '/results/overviews' },
+      { title: 'Subject Rankings', href: '/results/subjects' },
       { title: 'View Results', href: '/results' },
       { title: 'School Analysis', href: '/results/school' },
+      { title: 'Process Results', href: '/results/process' },
       { title: 'Download Reports', href: '/results/reports' },
     ],
   },

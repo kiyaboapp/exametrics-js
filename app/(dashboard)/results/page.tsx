@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useExamContext } from '@/components/providers/exam-context';
 import { useExamSchools, useExam } from '@/lib/hooks';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -24,12 +24,15 @@ import {
 } from '@/components/ui/select';
 import { Search, Eye, Download, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { FileText, TrendingUp, Users, BookOpen, Trophy } from 'lucide-react';
 
 export default function ResultsPage() {
   const { selectedExamId } = useExamContext();
   const { data: exam } = useExam(selectedExamId || '');
   const { data: schools, isLoading } = useExamSchools(selectedExamId || '');
-  
+  const router = useRouter();
+
   const [search, setSearch] = useState('');
   const [regionFilter, setRegionFilter] = useState<string>('all');
 
@@ -87,6 +90,80 @@ export default function ResultsPage() {
           </CardContent>
         </Card>
       )}
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="h-5 w-5" />
+              School Rankings
+            </CardTitle>
+            <CardDescription>View schools ranked by GPA with detailed positions</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/results/rankings">
+              <Button>View Rankings</Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              School Overviews
+            </CardTitle>
+            <CardDescription>Compare GPA breakdowns across schools</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/results/overviews">
+              <Button>View Overviews</Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              Subject Rankings
+            </CardTitle>
+            <CardDescription>View rankings by specific subjects</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-2">
+              <Select onValueChange={(code) => router.push(`/results/subjects/${code}`)}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Select subject" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="011">Mathematics</SelectItem>
+                  <SelectItem value="012">Physics</SelectItem>
+                  <SelectItem value="013">Chemistry</SelectItem>
+                  <SelectItem value="014">Biology</SelectItem>
+                  <SelectItem value="021">History</SelectItem>
+                  <SelectItem value="022">Geography</SelectItem>
+                  <SelectItem value="031">Kiswahili</SelectItem>
+                  <SelectItem value="032">English Language</SelectItem>
+                  <SelectItem value="041">Civics</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Process Results</CardTitle>
+            <CardDescription>Process examination results to generate analytics</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/results/process">
+              <Button>Process Results</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
 
       <Card>
         <CardHeader>

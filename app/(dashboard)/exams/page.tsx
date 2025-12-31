@@ -150,7 +150,7 @@ export default function ExamsPage() {
             </TableHeader>
             <TableBody>
               {filteredExams?.map((exam) => (
-                <TableRow key={`exam-${exam.id}`}>
+                <TableRow key={`exam-${exam.exam_id}`}>
                   <TableCell className="font-medium">
                     {exam.exam_name}
                     {exam.exam_name_swahili && (
@@ -178,25 +178,25 @@ export default function ExamsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                          <Link href={`/exams/${exam.id}`}>
+                          <Link href={`/exams/${exam.exam_id}`}>
                             <Eye className="mr-2 h-4 w-4" />
                             View
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href={`/exams/${exam.id}/edit`}>
+                          <Link href={`/exams/${exam.exam_id}/edit`}>
                             <Edit className="mr-2 h-4 w-4" />
                             Edit
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href={`/results/process?exam=${exam.id}`}>
+                          <Link href={`/results/process?exam=${exam.exam_id}`}>
                             <PlayCircle className="mr-2 h-4 w-4" />
                             Process Results
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link href={`/results?exam=${exam.id}`}>
+                          <Link href={`/results?exam=${exam.exam_id}`}>
                             <BarChart3 className="mr-2 h-4 w-4" />
                             View Results
                           </Link>

@@ -1,8 +1,12 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useSchoolAnalysis, useExam } from '@/lib/hooks';
+import { useExamContext } from '@/components/providers/exam-context';
+import { useExam, useExamSchools } from '@/lib/hooks';
+import { api } from '@/lib/api';
+import { formatGPA } from '@/lib/utils';
+import type { SchoolFullAnalysis } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -27,21 +31,71 @@ import { GradeBadge } from '@/components/grade-badge';
 import { isSecondary, isPrimary } from '@/lib/constants';
 
 export default function SchoolAnalysisPage() {
-  const searchParams = useSearchParams();
-  const examId = searchParams.get('exam');
-  const centreNumber = searchParams.get('centre');
+  const { selectedExamId } = useExamContext();
+  const examId = selectedExamId;
+  const [centreNumber, setCentreNumber] = useState<string>('');
 
   const { data: exam } = useExam(examId || '');
-  const { data: analysis, isLoading } = useSchoolAnalysis(examId || '', centreNumber || '');
+  const { data: schools } = useExamSchools(examId || '');
+  const [analysis, setAnalysis] = useState<SchoolFullAnalysis | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (!examId || !centreNumber) {
+  useEffect(() => {
+    if (!examId || !centreNumber) return;
+    
+    const fetchAnalysis = async () => {
+      setIsLoading(true);
+      try {
+        const data = await api.getSchoolFullAnalysis(examId, centreNumber);
+        setAnalysis(data);
+      } catch (error) {
+        console.error('Failed to fetch analysis:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchAnalysis();
+  }, [examId, centreNumber]);
+
+  if (!examId) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-4">
-        <h2 className="text-xl font-semibold">Missing Parameters</h2>
-        <p className="text-muted-foreground">Please select an exam and school to view analysis</p>
-        <Link href="/results">
-          <Button>Go to Results</Button>
-        </Link>
+        <h2 className="text-xl font-semibold">No Exam Selected</h2>
+        <p className="text-muted-foreground">Please select an exam from the header</p>
+      </div>
+    );
+  }
+
+  if (!centreNumber) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">School Analysis</h1>
+          <p className="text-muted-foreground">Select a school to view detailed analysis</p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Select School</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-2">
+              {schools?.map((school) => (
+                <Button
+                  key={school.centre_number}
+                  variant="outline"
+                  className="justify-start"
+                  onClick={() => setCentreNumber(school.centre_number)}
+                >
+                  <div className="flex flex-col items-start">
+                    <span className="font-semibold">{school.school_name}</span>
+                    <span className="text-sm text-muted-foreground">{school.centre_number}</span>
+                  </div>
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -90,39 +144,38 @@ export default function SchoolAnalysisPage() {
 
       {/* Key Metrics */}
       <div className="grid gap-4 md:grid-cols-4">
-        {showGPA ? (
-          <GPACard value={analysis.school_gpa || 0} label="School GPA" />
-        ) : (
-          <AverageMarksCard value={analysis.average_marks || 0} label="Average Marks" />
+        {showGPA && (
+          <Card>
+            <CardContent className="p-6">
+              <div className="text-sm font-medium text-muted-foreground">School GPA</div>
+              <div className="text-3xl font-bold font-mono">{formatGPA(analysis.school_gpa)}</div>
+            </CardContent>
+          </Card>
         )}
-        
-        {analysis.school_ranking && (
-          <>
-            {analysis.school_ranking.national_position && (
-              <RankingCard
-                position={analysis.school_ranking.national_position}
-                outOf={analysis.school_ranking.national_total || 1}
-                label="National Ranking"
-                icon="🏆"
-              />
-            )}
-            {analysis.school_ranking.regional_position && (
-              <RankingCard
-                position={analysis.school_ranking.regional_position}
-                outOf={analysis.school_ranking.regional_total || 1}
-                label="Regional Ranking"
-                icon="📍"
-              />
-            )}
-            {analysis.school_ranking.council_position && (
-              <RankingCard
-                position={analysis.school_ranking.council_position}
-                outOf={analysis.school_ranking.council_total || 1}
-                label="Council Ranking"
-                icon="🏛️"
-              />
-            )}
-          </>
+        {showGPA && (
+          <Card>
+            <CardContent className="p-6">
+              <div className="text-sm font-medium text-muted-foreground">Subjects GPA</div>
+              <div className="text-3xl font-bold font-mono">{formatGPA(analysis.subjects_gpa)}</div>
+            </CardContent>
+          </Card>
+        )}
+        {showGPA && (
+          <Card>
+            <CardContent className="p-6">
+              <div className="text-sm font-medium text-muted-foreground">Divisions GPA</div>
+              <div className="text-3xl font-bold font-mono">{formatGPA(analysis.divisions_gpa)}</div>
+            </CardContent>
+          </Card>
+        )}
+        {analysis.school_ranking && analysis.school_ranking.overall_pos && (
+          <Card>
+            <CardContent className="p-6">
+              <div className="text-sm font-medium text-muted-foreground">Overall Ranking</div>
+              <div className="text-3xl font-bold">#{analysis.school_ranking.overall_pos}</div>
+              <div className="text-xs text-muted-foreground">out of {analysis.school_ranking.overall_out_of}</div>
+            </CardContent>
+          </Card>
         )}
       </div>
 
@@ -275,7 +328,7 @@ export default function SchoolAnalysisPage() {
                         <TableCell className="font-medium">{subject.subject_name}</TableCell>
                         {showGPA && (
                           <TableCell className="text-right font-mono">
-                            {subject.gpa?.toFixed(2) || '-'}
+                            {formatGPA(subject.gpa)}
                           </TableCell>
                         )}
                         <TableCell className="text-right">
