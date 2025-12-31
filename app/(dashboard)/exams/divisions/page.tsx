@@ -37,8 +37,8 @@ export default function DivisionsConfigPage() {
     }
   }, [examIdFromUrl, selectedExamId, setSelectedExamId]);
   
-  const { data: exam } = useExam(examId);
-  const { data: divisions, refetch: refetchDivisions } = useExamDivisions(examId);
+  const { data: exam, isLoading: examLoading } = useExam(examId);
+  const { data: divisions, refetch: refetchDivisions, isLoading: divisionsLoading } = useExamDivisions(examId);
   
   const createDivision = useCreateExamDivision();
   const updateDivision = useUpdateExamDivision();
@@ -59,6 +59,15 @@ export default function DivisionsConfigPage() {
       <div className="flex flex-col items-center justify-center h-full gap-4">
         <h2 className="text-xl font-semibold">No Exam Selected</h2>
         <p className="text-muted-foreground">Please select an exam from the header first</p>
+      </div>
+    );
+  }
+
+  if (examLoading || divisionsLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full gap-4">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <p className="text-muted-foreground">Loading divisions...</p>
       </div>
     );
   }

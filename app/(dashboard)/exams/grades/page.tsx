@@ -37,8 +37,8 @@ export default function GradesConfigPage() {
     }
   }, [examIdFromUrl, selectedExamId, setSelectedExamId]);
   
-  const { data: exam } = useExam(examId);
-  const { data: grades, refetch: refetchGrades } = useExamGrades(examId);
+  const { data: exam, isLoading: examLoading } = useExam(examId);
+  const { data: grades, refetch: refetchGrades, isLoading: gradesLoading } = useExamGrades(examId);
   
   const createGrade = useCreateExamGrade();
   const updateGrade = useUpdateExamGrade();
@@ -59,6 +59,15 @@ export default function GradesConfigPage() {
       <div className="flex flex-col items-center justify-center h-full gap-4">
         <h2 className="text-xl font-semibold">No Exam Selected</h2>
         <p className="text-muted-foreground">Please select an exam from the header first</p>
+      </div>
+    );
+  }
+
+  if (examLoading || gradesLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full gap-4">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <p className="text-muted-foreground">Loading grades...</p>
       </div>
     );
   }
