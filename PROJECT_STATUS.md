@@ -47,7 +47,7 @@
 - [x] Dashboard layout with sidebar and header
 
 ### Pages - Auth & Dashboard
-- [x] `/` - Redirects to login
+- [] `/` - SHOULD HAVE LANDING PAGE
 - [x] `/login` - Login page with test credentials
 - [x] `/dashboard` - Main dashboard with exam statistics
 

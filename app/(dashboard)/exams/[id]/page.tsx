@@ -313,8 +313,8 @@ export default function ExamDetailsPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Grade</TableHead>
-                    <TableHead>Lowest Marks</TableHead>
-                    <TableHead>Highest Marks</TableHead>
+                    <TableHead>Lowest Value</TableHead>
+                    <TableHead>Highest Value</TableHead>
                     <TableHead>Grade Points</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -326,8 +326,8 @@ export default function ExamDetailsPage() {
                           {grade.grade}
                         </Badge>
                       </TableCell>
-                      <TableCell>{grade.lowest_marks}</TableCell>
-                      <TableCell>{grade.highest_marks}</TableCell>
+                      <TableCell>{grade.lowest_value}</TableCell>
+                      <TableCell>{grade.highest_value}</TableCell>
                       <TableCell>{grade.grade_points}</TableCell>
                     </TableRow>
                   ))}
